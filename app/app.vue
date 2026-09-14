@@ -121,6 +121,9 @@ function showToast(text: string) {
           :online="chat.online.value" :nick-list="chat.nickList.value" :connected="chat.connected.value"
           @send="chat.send" />
 
+        <UserPanel v-if="activePanel === 'user'" :nick="nick" :online="chat.online.value"
+          :nick-list="chat.nickList.value" :connected="chat.connected.value" @nick="confirmNick" />
+
         <ControlDock :active="activePanel" :unread="unread" @toggle="togglePanel"
           @settings="settingsOpen = true" />
       </div>

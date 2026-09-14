@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
- * 右下角控件坞:一排像素图标按钮 —— 番茄钟 / Todo / 聊天 / 全屏 / 设置。
- * 前二(番茄钟 / Todo)按「同一时刻最多展开一个面板,再点一次收起」切换;
+ * 右下角控件坞:一排像素图标按钮 —— 番茄钟 / Todo / 聊天 / 我 / 全屏 / 设置。
+ * 前四者按「同一时刻最多展开一个面板,再点一次收起」切换;
  * 全屏直接操作系统 API;设置打开设置弹窗。
  * 悬停时在**按钮上方**显示自定义提示气泡(PixelTip),不用原生 `title`。
  */
@@ -14,6 +14,7 @@ const ITEMS: { key: PanelKey, icon: string, label: string }[] = [
   { key: 'pomodoro', icon: 'pixelarticons:clock', label: '番茄钟' },
   { key: 'todo', icon: 'pixelarticons:checklist', label: 'Todo' },
   { key: 'chat', icon: 'pixelarticons:comment', label: '聊天' },
+  { key: 'user', icon: 'pixelarticons:user', label: '我' },
 ]
 
 /** 有未读时把条数写进提示文案,这样不点开也知道有人在说话 */
