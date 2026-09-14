@@ -84,7 +84,8 @@ function showToast(text: string) {
 
     <!-- 主界面 -->
     <div v-else class="relative h-full">
-      <header class="relative z-2 flex items-start justify-end px-5 pt-6">
+      <!-- 右上角时钟:上/右内边距与左侧 ListeningNow 的 p-5 对齐,否则两角错位 -->
+      <header class="relative z-2 flex items-start justify-end px-5 pt-5">
         <div class="flex flex-col items-end">
           <div class="glow font-num text-[30px] leading-none text-cream">
             {{ clockParts[0] }}<span class="animate-colon">:</span>{{ clockParts[1] }}

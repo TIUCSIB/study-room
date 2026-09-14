@@ -24,7 +24,7 @@ watch(() => props.count, async (c) => {
 </script>
 
 <template>
-  <p class="glow pointer-events-none flex items-baseline gap-2 p-5 pt-4 font-body text-[24px] text-cream/90">
+  <p class="glow pointer-events-none flex items-baseline gap-2 p-5 font-body text-[24px] text-cream/90">
     <template v-if="done">
       <span>正在自习 {{ count }} 人</span>
       <span class="animate-blink self-center text-[36px] leading-none text-accent"> ·</span>
