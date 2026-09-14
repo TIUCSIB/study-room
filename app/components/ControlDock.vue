@@ -41,7 +41,7 @@ onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFulls
       :title="item.label"
       @click="emit('toggle', item.key)"
     >
-      <Icon :name="item.icon" class="size-5" />
+      <Icon :name="item.icon" class="icon-pixel glow-icon" />
     </button>
     <button
       class="transition-colors"
@@ -50,7 +50,7 @@ onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFulls
       :title="fullscreen ? '退出全屏' : '全屏'"
       @click="toggleFullscreen"
     >
-      <Icon :name="fullscreen ? 'pixel:times-solid' : 'pixel:expand-solid'" class="size-5" />
+      <Icon :name="fullscreen ? 'pixel:times-solid' : 'pixel:expand-solid'" class="icon-pixel glow-icon" />
     </button>
   </nav>
 </template>

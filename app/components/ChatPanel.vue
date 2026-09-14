@@ -78,7 +78,9 @@ function timeOf(ts: number): string {
           aria-label="聊天输入"
           class="min-w-0 flex-1 border border-line bg-black/40 px-2.5 py-1.5 text-[17px] text-cream outline-none placeholder:text-dim/70 focus:border-accent/60"
         >
-        <button type="submit" class="glow px-1 text-accent" aria-label="发送">➤</button>
+        <button type="submit" class="flex shrink-0 items-center px-1 text-accent" aria-label="发送">
+          <Icon name="pixel:arrow-right-solid" class="icon-pixel glow-icon" />
+        </button>
       </form>
     </template>
   </section>

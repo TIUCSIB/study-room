@@ -11,7 +11,9 @@ export default defineNuxtConfig({
   icon: {
     // 本地图标集(pixel:实心粗笔画像素图标),离线可用
     mode: 'svg',
-    size: '20px',
+    // 兜底尺寸:必须与图标原生网格(24px)一致,非整数缩放会把像素图插值糊边。
+    // 具体组件仍应显式加 `icon-pixel` 工具类(它同时负责 crispEdges),见 AGENTS.md §5.5
+    size: '24px',
   },
 
   vite: {

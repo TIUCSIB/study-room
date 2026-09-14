@@ -54,7 +54,9 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
         aria-label="待办内容"
         class="min-w-0 flex-1 border border-line bg-black/40 px-2.5 py-1.5 text-[17px] text-cream outline-none placeholder:text-dim/70 focus:border-accent/60"
       >
-      <button type="submit" class="glow px-1 text-accent" aria-label="添加">➤</button>
+      <button type="submit" class="flex shrink-0 items-center px-1 text-accent" aria-label="添加">
+        <Icon name="pixel:arrow-right-solid" class="icon-pixel glow-icon" />
+      </button>
     </form>
 
     <ul class="flex max-h-[220px] flex-col gap-1 overflow-y-auto text-[17px] leading-snug">
@@ -67,10 +69,12 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
         >{{ t.done ? '▣' : '▢' }}</button>
         <span class="min-w-0 flex-1 break-words" :class="t.done ? 'text-dim line-through' : 'text-cream/95'">{{ t.text }}</span>
         <button
-          class="shrink-0 text-dim/50 opacity-0 transition-opacity group-hover:opacity-100 hover:text-danger"
+          class="flex shrink-0 items-center text-dim/50 opacity-0 transition-opacity group-hover:opacity-100 hover:text-danger"
           aria-label="删除"
           @click="remove(t.id)"
-        >✕</button>
+        >
+          <Icon name="pixel:trash-solid" class="icon-pixel" />
+        </button>
       </li>
       <li v-if="todos.length === 0" class="mt-6 text-center text-dim">
         空空的,写一件小事<span class="animate-blink text-accent">▮</span>

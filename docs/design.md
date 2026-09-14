@@ -39,7 +39,7 @@
 2. **荧光字**:`glow` / `glow-info` 工具类 —— 多层 text-shadow 模拟 CRT 荧光粉(琥珀主色/雾蓝信息色)
 3. **扫描线**:`crt-lines` 工具类 —— 3px 周期横纹,`mix-blend-mode: overlay`,9s 缓慢下移
 4. **开机动画**:`crt-boot` —— 进站画面从一条横线展开并闪亮(scaleY 0→1 + brightness 14→1)
-5. **无卡片化**:文字直接铺在场景上(顶栏);必须的面板用 `glass`(近黑底 + 1px 暖描边 + 直角);进度条是 `▮▮▮▯▯` 字符块;按钮用**实心像素图标**(`pixel` 图标集 `-solid` 变体,经 `@nuxt/icon` 本地渲染,悬停显中文 tooltip;细线图标缩小会发虚,不用);键盘操作:空格播放/暂停、←→ 切歌
+5. **无卡片化**:文字直接铺在场景上(顶栏);必须的面板用 `glass`(近黑底 + 1px 暖描边 + 直角);进度条是 `▮▮▮▯▯` 字符块;按钮用**实心像素图标**(`pixel` 图标集 `-solid` 变体,经 `@nuxt/icon` 本地渲染,悬停显中文 tooltip;细线图标缩小会发虚,不用)。图标渲染统一走 `icon-pixel` 工具类 —— **24px 即原生网格 1:1,并 `shape-rendering: crispEdges` 关掉抗锯齿**,否则像素图被插值、与硬边像素字违和;要辉光用 `glow-icon`(`filter: drop-shadow`),因为 `glow` 的 `text-shadow` 对 SVG 图形无效。键盘操作:空格播放/暂停、←→ 切歌
 
 ### 色彩令牌(唯一来源)
 
