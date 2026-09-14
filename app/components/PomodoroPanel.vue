@@ -99,12 +99,15 @@ onBeforeUnmount(() => {
 <template>
   <section class="glass flex w-[260px] flex-col items-center px-4 py-4" aria-label="番茄钟">
     <button
-      class="font-num glow text-[56px] leading-none text-accent"
-      :title="running ? '运行中' : '点击切换时长预设'"
+      class="group font-num glow relative text-[56px] leading-none text-accent"
+      :aria-label="running ? '运行中,不能改时长' : '点击切换时长预设'"
       :disabled="running"
       @click="cyclePreset"
     >
       {{ display }}
+      <!-- 必须用自定义气泡:原生 title 在 disabled 的按钮上多数浏览器不显示,
+           而"运行中"这句提示恰恰只在禁用时才有意义 -->
+      <PixelTip :label="running ? '运行中' : '点击切换时长预设'" />
     </button>
 
     <div class="mt-3 flex items-center gap-4 text-[19px]">
