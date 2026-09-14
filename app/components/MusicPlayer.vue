@@ -89,13 +89,13 @@ watch(volume, (v) => {
         <Icon name="pixel:shuffle-solid" class="icon-pixel glow-icon" />
       </button>
       <button class="text-cream/85 hover:text-cream" aria-label="上一首" @click="prev">
-        <Icon name="pixel:arrow-left-solid" class="icon-pixel glow-icon" />
+        <Icon name="pixel:angle-left-solid" class="icon-pixel glow-icon" />
       </button>
       <button class="text-cream/85 hover:text-cream" aria-label="下一首" @click="next">
-        <Icon name="pixel:arrow-right-solid" class="icon-pixel glow-icon" />
+        <Icon name="pixel:angle-right-solid" class="icon-pixel glow-icon" />
       </button>
       <span class="ml-1 flex items-center gap-[3px]">
-        <button v-for="i in VOL_BLOCKS" :key="i" class="h-[14px] w-[6px]"
+        <button v-for="i in VOL_BLOCKS" :key="i" class="h-[22px] w-[10px]"
           :class="i <= filledVol ? 'bg-accent' : 'bg-accent/25'"
           :aria-label="`音量 ${Math.round((i / VOL_BLOCKS) * 100)}%`" @click="setVolume(i)" />
       </span>
