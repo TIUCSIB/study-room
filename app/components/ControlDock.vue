@@ -39,41 +39,26 @@ onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFulls
 
 <template>
   <nav class="flex items-center gap-3.5" aria-label="功能控件">
-    <button
-      v-for="item in items"
-      :key="item.key"
-      class="group relative transition-colors"
+    <button v-for="item in items" :key="item.key" class="group relative transition-colors"
       :class="props.active === item.key ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
-      :aria-pressed="props.active === item.key"
-      :aria-label="item.label"
-      @click="emit('toggle', item.key)"
-    >
+      :aria-pressed="props.active === item.key" :aria-label="item.label" @click="emit('toggle', item.key)">
       <Icon :name="item.icon" class="icon-pixel glow-icon" />
       <!-- 未读点:用方块而非圆点,与 ▮ 的字符块语言一致 -->
-      <span
-        v-if="item.key === 'chat' && props.unread > 0"
-        class="animate-breathe absolute -top-0.5 -right-0.5 size-1.5 bg-accent"
-      />
+      <span v-if="item.key === 'chat' && props.unread > 0"
+        class="animate-breathe absolute -top-0.5 -right-0.5 size-1.5 bg-accent" />
       <PixelTip :label="item.label" />
     </button>
 
-    <button
-      class="group relative transition-colors"
-      :class="fullscreen ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
-      :aria-pressed="fullscreen"
-      :aria-label="fullscreen ? '退出全屏' : '全屏'"
-      @click="toggleFullscreen"
-    >
+    <button class="group relative transition-colors"
+      :class="fullscreen ? 'glow text-accent' : 'text-cream/80 hover:text-cream'" :aria-pressed="fullscreen"
+      :aria-label="fullscreen ? '退出全屏' : '全屏'" @click="toggleFullscreen">
       <Icon :name="fullscreen ? 'pixelarticons:close' : 'pixelarticons:expand'" class="icon-pixel glow-icon" />
       <PixelTip :label="fullscreen ? '退出全屏' : '全屏'" align="end" />
     </button>
 
-    <button
-      class="group relative text-cream/80 transition-colors hover:text-cream"
-      aria-label="设置"
-      @click="emit('settings')"
-    >
-      <Icon name="pixelarticons:gear" class="icon-pixel glow-icon" />
+    <button class="group relative text-cream/80 transition-colors hover:text-cream" aria-label="设置"
+      @click="emit('settings')">
+      <Icon name="pixelarticons:settings-2-sharp" class="icon-pixel glow-icon" />
       <PixelTip label="设置" align="end" />
     </button>
   </nav>
