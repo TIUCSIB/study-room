@@ -31,7 +31,7 @@ pnpm preview    # 预览生产构建
 ```
 app/
 ├── components/     # UI 组件,自动导入
-├── composables/    # useChat 等,状态与通信逻辑
+├── composables/    # useChat(SSE 聊天)、useSettings(本地设置 + localStorage 键名登记)
 ├── assets/css/     # main.css:Tailwind 入口 + @theme 设计令牌(唯一色源)
 └── types.ts        # 跨组件共享类型(如 PanelKey)
 server/
@@ -81,6 +81,8 @@ tools/               # 一次性资源生成脚本(不进构建产物)
    - 原生提示的字体、圆角、延迟、配色全由浏览器/系统决定,**系统字体铺在满屏像素字里最跳**;
    - **原生 `title` 在 `disabled` 元素上多数浏览器不显示** —— 番茄钟"运行中"这类只在禁用时有意义的提示,用它根本出不来。
    约定:无障碍名写在元素的 `aria-label` 上,气泡本体带 `aria-hidden`(否则同一句话被读两遍);气泡默认居中,元素贴近视口边缘(如控件坞最右的全屏键)时用 `align="end"` 防溢出。
+9. **客户端设置项先登记键名**:localStorage 的键**统一登记在 `app/composables/useSettings.ts`**(前缀 `lofi-room:`),**不要在组件里写字面量** —— 此前散在 `app.vue` 与 `TodoPanel.vue` 里,多一处就多一次拼错。新增设置项 = 在该文件加键名 + 在 `SettingsModal` 加一行。另外:音量、随机播放这类「刷新就丢」的状态目前是**刻意**的(见 design.md §6 P5),要改持久化先确认需求。
+10. **弹窗一律走 `ModalShell`**:遮罩、Esc、点遮罩关闭、入场动画都在那里统一实现,`closable={false}` 只给首次昵称弹窗(那个不能关)。**禁止自制覆盖层**,否则各弹窗的关闭行为会各自跑偏。设置类内容**不要做成独立路由** —— 整站是单页沉浸架构,切路由会重挂载 `MusicPlayer` 导致音乐中断、SSE 断连重连,理由详见 design.md §4.9。
 
 ## 6. 验收流程(Definition of Done)
 

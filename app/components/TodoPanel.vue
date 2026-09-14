@@ -1,15 +1,19 @@
 <script setup lang="ts">
 /**
- * Todo 面板:本地待办(localStorage,键 lofi-room:todos),不做服务端同步。
+ * Todo 内容:本地待办(localStorage,键 lofi-room:todos),不做服务端同步。
+ * 宿主是 StudyPanel —— 本组件**不自带 glass 外壳**,也不重复标题
+ * (tab 上已经写着 Todo 了),只留剩余件数。
  * 复用终端风:勾选用 ▣/▢ 字符块。
  */
+import { LS_KEYS } from '@/composables/useSettings'
+
 interface Todo {
   id: number
   text: string
   done: boolean
 }
 
-const KEY = 'lofi-room:todos'
+const KEY = LS_KEYS.todos
 
 const todos = ref<Todo[]>([])
 const draft = ref('')
@@ -39,11 +43,8 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
 </script>
 
 <template>
-  <section class="glass flex w-[320px] flex-col px-3.5 py-3" aria-label="待办清单">
-    <header class="mb-2 flex items-center justify-between">
-      <span class="glow text-cream">今日待办</span>
-      <span class="text-[15px] text-dim">{{ undoneCount ? `剩 ${undoneCount} 件` : '都清空啦' }}</span>
-    </header>
+  <div class="flex flex-col">
+    <p class="mb-2 text-[15px] text-dim">{{ undoneCount ? `剩 ${undoneCount} 件` : '都清空啦' }}</p>
 
     <form class="mb-2 flex gap-2" @submit.prevent="add">
       <input
@@ -80,5 +81,5 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
         空空的,写一件小事<span class="animate-blink text-accent">▮</span>
       </li>
     </ul>
-  </section>
+  </div>
 </template>

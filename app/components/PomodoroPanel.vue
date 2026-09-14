@@ -1,17 +1,27 @@
 <script setup lang="ts">
 /**
- * 番茄钟面板(lofi.cafe 式,docs/design.md §4.3):
- * 大号像素倒计时;空闲点数字在 5/25/50 分钟预设间轮换;运行中 +5:00 随时加时。
+ * 番茄钟内容(docs/design.md §4.3)。宿主是 StudyPanel —— 本组件**不自带 glass 外壳**,
+ * 只负责内容,否则会「玻璃里套玻璃」。
+ * 大号像素倒计时;空闲点数字在预设间轮换;运行中 +5:00 随时加时。
  * Pause/Resume/End;完成或结束满 1 分钟 → POST /api/pomodoros 入账。
  */
+import { POMODORO_MINUTES, usePomodoroMinutes } from '@/composables/useSettings'
+
 const props = defineProps<{ nick: string }>()
 const emit = defineEmits<{ toast: [text: string] }>()
 
-const PRESETS = [5, 25, 50]
+const PRESETS = POMODORO_MINUTES
 const MAX_SEC = 600 * 60
 
-const presetIdx = ref(0)
-const leftSec = ref(PRESETS[0]! * 60)
+function indexOfPreset(minutes: number) {
+  const i = (PRESETS as readonly number[]).indexOf(minutes)
+  return i >= 0 ? i : 0
+}
+
+/** 默认时长来自设置页;面板里点数字只是**临时**切换,不写回设置 */
+const defaultMinutes = usePomodoroMinutes()
+const presetIdx = ref(indexOfPreset(defaultMinutes.value))
+const leftSec = ref(PRESETS[presetIdx.value]! * 60)
 const elapsedSec = ref(0)
 const running = ref(false)
 let timer: ReturnType<typeof setInterval> | null = null
@@ -39,6 +49,13 @@ function cyclePreset() {
   presetIdx.value = (presetIdx.value + 1) % PRESETS.length
   reset()
 }
+
+/** 设置页改了默认时长:空闲时立即跟上;正在计时就不打断这一轮 */
+watch(defaultMinutes, (m) => {
+  if (running.value) return
+  presetIdx.value = indexOfPreset(m)
+  reset()
+})
 
 function addFive() {
   leftSec.value = Math.min(leftSec.value + 300, MAX_SEC)
@@ -97,7 +114,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="glass flex w-[260px] flex-col items-center px-4 py-4" aria-label="番茄钟">
+  <div class="flex flex-col items-center">
     <button
       class="group font-num glow relative text-[56px] leading-none text-accent"
       :aria-label="running ? '运行中,不能改时长' : '点击切换时长预设'"
@@ -123,5 +140,5 @@ onBeforeUnmount(() => {
     </div>
 
     <p class="mt-2 text-[15px] text-dim">{{ running ? '专注中,别分心太久哦' : '点数字换时长,开始就少看手机' }}</p>
-  </section>
+  </div>
 </template>

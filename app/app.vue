@@ -4,10 +4,9 @@
  * 身份 = 昵称(localStorage),无登录。风格:像素电台 CRT 终端(lofi.cafe 式)。
  */
 import type { PanelKey } from '@/types'
+import { LS_KEYS } from '@/composables/useSettings'
 
 useHead({ title: 'Lofi 自习室 · 一起学到底' })
-
-const NICK_KEY = 'lofi-room:nick'
 
 const started = ref(false)
 const nick = ref<string | null>(null)
@@ -38,7 +37,7 @@ function tickClock() {
 const clockParts = computed(() => clock.value.split(':'))
 
 onMounted(async () => {
-  nick.value = localStorage.getItem(NICK_KEY)
+  nick.value = localStorage.getItem(LS_KEYS.nick)
   nickReady.value = true
   tickClock()
   clockTimer = setInterval(tickClock, 1000)
@@ -52,17 +51,34 @@ onBeforeUnmount(() => {
   if (clockTimer) clearInterval(clockTimer)
 })
 
+/** 首次进页与设置页改名都走这里。改昵称后 useChat 会以新身份重连 SSE */
 function confirmNick(value: string) {
   nick.value = value
-  localStorage.setItem(NICK_KEY, value)
+  localStorage.setItem(LS_KEYS.nick, value)
 }
 
 /** 右下角控件坞:同一时刻最多展开一个面板,再点一次收起 */
 const activePanel = ref<PanelKey | null>(null)
+const settingsOpen = ref(false)
 
 function togglePanel(key: PanelKey) {
   activePanel.value = activePanel.value === key ? null : key
 }
+
+/**
+ * 未读数。聊天是否「有人说话」不该只有点开才知道 —— 那是 §1 说的陪伴感。
+ * 只算别人的聊天消息,系统消息与自己的发言不计。
+ */
+const unread = ref(0)
+
+watch(() => chat.messages.value.length, () => {
+  const last = chat.messages.value[chat.messages.value.length - 1]
+  if (last && activePanel.value !== 'chat' && last.kind === 'chat' && !last.mine) unread.value += 1
+})
+
+watch(activePanel, (v) => {
+  if (v === 'chat') unread.value = 0
+})
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null
 function showToast(text: string) {
@@ -84,8 +100,9 @@ function showToast(text: string) {
 
     <!-- 主界面 -->
     <div v-else class="relative h-full">
-      <!-- 右上角时钟:上/右内边距与左侧 ListeningNow 的 p-5 对齐,否则两角错位 -->
-      <header class="relative z-2 flex items-start justify-end px-5 pt-5">
+      <!-- 右上角:全屏/设置 + 时钟。上/右内边距与左侧 ListeningNow 的 p-5 对齐,否则两角错位 -->
+      <header class="relative z-2 flex items-start justify-end gap-5 px-5 pt-5">
+        <HeaderControls class="mt-[3px]" @settings="settingsOpen = true" />
         <div class="flex flex-col items-end">
           <div class="glow font-num text-[30px] leading-none text-cream">
             {{ clockParts[0] }}<span class="animate-colon">:</span>{{ clockParts[1] }}
@@ -98,15 +115,13 @@ function showToast(text: string) {
 
       <!-- 右下角控件坞 + 当前展开的面板(同一时刻一个)。四角内边距统一 20px,见 design.md §2 -->
       <div class="absolute right-5 bottom-5 z-2 flex flex-col items-end gap-2">
-        <PomodoroPanel v-if="nick && activePanel === 'pomodoro'" :nick="nick" @toast="showToast" />
-        <TodoPanel v-if="activePanel === 'todo'" />
-        <AboutPanel v-if="activePanel === 'about'" />
+        <StudyPanel v-if="nick && activePanel === 'study'" :nick="nick" @toast="showToast" />
 
         <ChatPanel v-if="nick && activePanel === 'chat'" :messages="chat.messages.value"
           :online="chat.online.value" :nick-list="chat.nickList.value" :connected="chat.connected.value"
           @send="chat.send" />
 
-        <ControlDock :active="activePanel" @toggle="togglePanel" />
+        <ControlDock :active="activePanel" :unread="unread" @toggle="togglePanel" />
       </div>
 
       <Transition name="fade">
@@ -116,6 +131,7 @@ function showToast(text: string) {
       </Transition>
     </div>
 
+    <SettingsModal v-if="settingsOpen" :nick="nick" @close="settingsOpen = false" @nick="confirmNick" />
     <NicknameModal v-if="nickReady && started && !nick" @confirm="confirmNick" />
   </div>
 </template>

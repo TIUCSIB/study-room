@@ -11,8 +11,8 @@ function submit() {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-50 grid place-items-center bg-void/70 backdrop-blur-[3px]">
-    <form class="glass crt-boot w-[min(88vw,380px)] p-7 text-center" @submit.prevent="submit">
+  <ModalShell label="欢迎,先起个名字" :closable="false">
+    <form class="p-7 text-center" @submit.prevent="submit">
       <h2 class="glow mb-2 text-[22px] text-cream">🎧 欢迎来到 Lofi 自习室</h2>
       <p class="mb-4.5 text-[16px] text-dim">给自己起个名字,让大家认识你</p>
       <input
@@ -32,5 +32,5 @@ function submit() {
         [ 进门自习 → ]
       </button>
     </form>
-  </div>
+  </ModalShell>
 </template>

@@ -30,24 +30,32 @@ export function useChat(nick: Ref<string | null>) {
   }
 
   function connect() {
-    if (!nick.value || !import.meta.client || source) return
-    source = new EventSource(`/api/chat?nick=${encodeURIComponent(nick.value)}`)
+    if (!nick.value || !import.meta.client) return
+    // 已有连接先关掉再重建。EventSource 的身份(nick)是**建立时**写死在查询串里的,
+    // 不重连的话改昵称后服务端在线名单会一直挂着旧名字 —— 这正是必须重连的原因。
+    if (source) {
+      source.close()
+      source = null
+    }
 
-    source.addEventListener('chat', (e) => {
+    const es = new EventSource(`/api/chat?nick=${encodeURIComponent(nick.value)}`)
+    source = es
+
+    es.addEventListener('chat', (e) => {
       const d = JSON.parse((e as MessageEvent).data) as { nick: string, text: string, ts: number }
       push('chat', d.nick, d.text, d.ts, d.nick === nick.value)
     })
-    source.addEventListener('system', (e) => {
+    es.addEventListener('system', (e) => {
       const d = JSON.parse((e as MessageEvent).data) as { text: string, ts: number }
       push('system', '', d.text, d.ts)
     })
-    source.addEventListener('presence', (e) => {
+    es.addEventListener('presence', (e) => {
       const d = JSON.parse((e as MessageEvent).data) as { count: number, nicks: string[] }
       online.value = d.count
       nickList.value = d.nicks
     })
-    source.onopen = () => { connected.value = true }
-    source.onerror = () => { connected.value = false }
+    es.onopen = () => { connected.value = true }
+    es.onerror = () => { connected.value = false }
   }
 
   function disconnect() {

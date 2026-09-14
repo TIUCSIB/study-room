@@ -1,50 +1,44 @@
 <script setup lang="ts">
 /**
- * 右下角控件坞:像素图标按钮,切换番茄钟 / Todo / 聊天 / 关于面板;
- * 全屏按钮直接操作系统 API。
- * 悬停时在**按钮上方**显示自定义提示气泡(PixelTip),不用原生 `title` —— 原因见该组件。
+ * 右下角控件坞:只剩两个高频入口 —— 学习(番茄钟 + Todo)与聊天。
+ * 全屏与设置移到右上角与时钟同区(见 HeaderControls):那两项是低频的界面元信息,
+ * 和「房间里的活动」不是一类,混在一起会让入口列表变长、权重不分。
  */
 import type { PanelKey } from '@/types'
 
-const props = defineProps<{ active: PanelKey | null }>()
+const props = defineProps<{ active: PanelKey | null, unread: number }>()
 const emit = defineEmits<{ toggle: [key: PanelKey] }>()
 
 const ITEMS: { key: PanelKey, icon: string, label: string }[] = [
-  { key: 'pomodoro', icon: 'pixelarticons:clock', label: '番茄钟' },
-  { key: 'todo', icon: 'pixelarticons:checklist', label: 'Todo' },
+  { key: 'study', icon: 'pixelarticons:notebook', label: '学习' },
   { key: 'chat', icon: 'pixelarticons:comment', label: '聊天' },
-  { key: 'about', icon: 'pixelarticons:ai-user-circle', label: '关于' },
 ]
 
-const fullscreen = ref(false)
-
-function toggleFullscreen() {
-  if (document.fullscreenElement) void document.exitFullscreen()
-  else void document.documentElement.requestFullscreen()
-}
-
-function syncFullscreen() {
-  fullscreen.value = !!document.fullscreenElement
-}
-
-onMounted(() => document.addEventListener('fullscreenchange', syncFullscreen))
-onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFullscreen))
+/** 有未读时把条数写进提示文案,这样不点开也知道有人在说话 */
+const items = computed(() => ITEMS.map(i => ({
+  ...i,
+  label: i.key === 'chat' && props.unread > 0 ? `聊天 · ${props.unread} 条新消息` : i.label,
+})))
 </script>
 
 <template>
   <nav class="flex items-center gap-3.5" aria-label="功能控件">
-    <button v-for="item in ITEMS" :key="item.key" class="group relative transition-colors"
+    <button
+      v-for="item in items"
+      :key="item.key"
+      class="group relative transition-colors"
       :class="props.active === item.key ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
-      :aria-pressed="props.active === item.key" :aria-label="item.label" @click="emit('toggle', item.key)">
+      :aria-pressed="props.active === item.key"
+      :aria-label="item.label"
+      @click="emit('toggle', item.key)"
+    >
       <Icon :name="item.icon" class="icon-pixel glow-icon" />
+      <!-- 未读点:用方块而非圆点,与 ▮ 的字符块语言一致 -->
+      <span
+        v-if="item.key === 'chat' && props.unread > 0"
+        class="animate-breathe absolute -top-0.5 -right-0.5 size-1.5 bg-accent"
+      />
       <PixelTip :label="item.label" />
-    </button>
-    <!-- 全屏在最右,而控件坞本身贴右边缘(right-5);气泡居中会顶出视口,故贴右对齐 -->
-    <button class="group relative transition-colors"
-      :class="fullscreen ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
-      :aria-pressed="fullscreen" :aria-label="fullscreen ? '退出全屏' : '全屏'" @click="toggleFullscreen">
-      <Icon :name="fullscreen ? 'pixelarticons:close' : 'pixelarticons:expand'" class="icon-pixel glow-icon" />
-      <PixelTip :label="fullscreen ? '退出全屏' : '全屏'" align="end" />
     </button>
   </nav>
 </template>
