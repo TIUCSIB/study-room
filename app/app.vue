@@ -3,6 +3,8 @@
  * Lofi 自习室:开机引导 → 全屏场景 + 音乐 + 实时聊天 + 番茄钟。
  * 身份 = 昵称(localStorage),无登录。风格:像素电台 CRT 终端(lofi.cafe 式)。
  */
+import type { PanelKey } from '@/types'
+
 useHead({ title: 'Lofi 自习室 · 一起学到底' })
 
 const NICK_KEY = 'lofi-room:nick'
@@ -116,16 +118,3 @@ function showToast(text: string) {
     <NicknameModal v-if="nickReady && started && !nick" @confirm="confirmNick" />
   </div>
 </template>
-
-<style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.25s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-8px);
-}
-</style>

@@ -54,10 +54,15 @@
 
 8. **design.md 自身也有脱节**(修文档时顺手处理):§2 与 §4.8 把 ControlDock 描述为 `[ 方括号 ]` 文本按钮,实际已是 pixel 图标按钮;§4.6「开机引导(BootGate)」是**空标题**,无正文。
 
-## D. 建议动作顺序
+## D. 建议动作顺序(已于 2026-09-14 全部执行完毕)
 
-1. `git init` + 基线提交(消除不可回滚风险)
-2. 修正文档:`.data` 路径(3 处)、Todo/番茄钟状态、删 pinia/vitest/`src/domain` 描述
-3. 清理 `ws` + `@types/ws`,重跑 `pnpm build`
-4. `PanelKey` 显式化 + 迁移 `app.vue` 的 `<style>`
-5. 再定方向:音乐源(§5)、多场景电台切换、专注报告(数据已齐,`statsFor` 已实现 today/streak/total 三个指标但**无任何消费方**)——注意 `statsFor` 目前返回的统计前端完全没用到,是现成的未接线能力。
+| # | 动作 | 状态 |
+|---|---|---|
+| 1 | `git init -b main` + 基线提交(消除不可回滚风险) | ✅ 基线 `552c87f`,34 个文件入库;`node_modules`/`.nuxt`/`.output`/`.data` 已由 `.gitignore` 排除 |
+| 2 | 修正文档:`.data` 路径、ControlDock 图标按钮、design.md §4.6 空标题、README 番茄钟模式 | ✅ 涉及 AGENTS.md §2/§4/§7、design.md §2/§4.5/§4.6/§4.8/§5(版本升至 v3.1)、README.md |
+| 3 | 清理 `ws` + `@types/ws`,重跑 `pnpm build` | ✅ 已移除,构建通过 |
+| 4 | `PanelKey` 显式化 + 迁移 `app.vue` 的 `<style>` | ✅ 新增 `app/types.ts`;过渡类迁入 `main.css` |
+| 5 | 重写交接文件为核对后版本 | ✅ `%TEMP%\lofi-study-room-handoff.md` 已重写,待用户拍板产品方向 |
+
+下一步(未执行,等用户拍板):音乐源 / 多场景电台切换 / 专注报告。注意 `statsFor()` 返回的统计前端完全没用到,是现成的未接线能力。
+

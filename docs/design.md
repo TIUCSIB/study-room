@@ -1,6 +1,6 @@
 # Lofi 自习室 · 设计文档
 
-> 版本:v3.0 · 2026-09-13(Nuxt 重写版)
+> 版本:v3.1 · 2026-09-14(Nuxt 重写版;v3.1 修正控件坞图标按钮、场景三级回退与 `.data` 路径描述)
 > 状态:MVP 已实现。本文档是设计与令牌的唯一事实来源,`AGENTS.md` 引用此处。
 
 ## 1. 产品概念
@@ -23,13 +23,13 @@
 │                                                │
 │         （全屏循环 GIF/视频 / 降级动效场景）       │
 │                                                │
-│ [▶ 🔊 ⏮ ⏭ ▮▮▮音量]   [番茄钟][Todo][聊天][全屏][关于] │  左下传输条/右下控件坞
+│ [▶ 🔊 ⏮ ⏭ ▮▮▮音量]   [番茄钟][Todo][聊天][关于][全屏] │  左下传输条/右下控件坞
 │ ...【Lofi 自习室】 当前曲名        (控件坞上方展开面板)   │
 └────────────────────────────────────────────────┘
 ```
 
-- 全屏背景 `<video>` 循环播放 `public/videos/scene.mp4`(用户自备);缺失时降级为代码渲染的"雨夜霓虹"场景(三团漂移光斑 + 雨丝 + 暗角)
-- 右下角是控件坞(`ControlDock`,方括号文本按钮):番茄钟 / Todo / 聊天 / 全屏 / 关于;前四者切换对应面板,同一时刻最多展开一个,再点一次收起。聊天面板由「聊天」按钮开关(不再常驻)
+- 全屏背景按**三级回退**选源(见 §4.5):`scene.mp4` 循环视频 → `scene.gif` 循环 GIF → 代码渲染的"雨夜霓虹"场景(三团漂移光斑 + 雨丝 + 暗角)
+- 右下角是控件坞(`ControlDock`,**实心像素图标按钮** + 悬停中文 tooltip):番茄钟 / Todo / 聊天 / 关于 / 全屏;前四者切换对应面板,同一时刻最多展开一个,再点一次收起。聊天面板由「聊天」按钮开关(不再常驻)
 - 所有浮层用 `.glass` 毛玻璃面板,保证在任意视频内容上可读
 
 ## 3. 风格:像素电台 CRT 终端(参考 lofi.cafe)
@@ -97,12 +97,16 @@
 
 ### 4.6 开机引导(BootGate)
 
+由 `BootGate.vue` 实现:全屏场景之上先只显示打字机引导,任意键/任意点击(含打字中途)即跳过并进入主界面。
+引导页的在线数走 `GET /api/presence`(此时尚未建立 SSE 连接),进入主界面后由 SSE 的 `presence` 事件接管;
+「正在自习 N 人」是常驻组件 `ListeningNow.vue`,**引导页与主界面共用同一个实例、不重建**,打字机只跑一次。详见 §4.8。
+
 ### 4.7 Todo 面板(本地)
 - 由控件坞「Todo」按钮开关;纯本地 localStorage(`lofi-room:todos`),不做服务端同步
 - 添加(≤60 字)、勾选完成(▣/▢ 字符块)、悬浮删除;头部显示剩余件数,文案轻暖
 
 ### 4.8 控件坞(ControlDock)与关于面板
-- 右下角一排 `[ 方括号 ]` 文本按钮:番茄钟 / Todo / 聊天 / 全屏 / 关于;全屏走浏览器 Fullscreen API 并同步按钮态
+- 右下角一排 **实心像素图标按钮**(`pixel:clock-solid` / `check-list-solid` / `comment-solid` / `info-circle-solid`,全屏为 `expand-solid` ↔ `times-solid` 切换):番茄钟 / Todo / 聊天 / 关于 / 全屏;全屏走浏览器 Fullscreen API 并同步按钮态
 - 同一时刻最多展开一个面板,面板堆叠在控件坞上方;「关于」为静态说明(是什么 + 快捷键)
 - 进站先只显示场景:左上打字机逐字打出 `listening now N` + 闪烁小点;完成后左下打出 `press any key to start` + 闪烁方块光标 ▮
 - 任意键/任意点击立即进入主界面(打字中途按也会跳过),主界面播放 `crt-boot` 通电动画
@@ -113,7 +117,7 @@
 - **Nuxt 4 全栈**:前端 `app/`,服务端 `server/`(Nitro)
 - **样式**:Tailwind CSS v4(`@tailwindcss/vite`),令牌在 `@theme`;硬性规范见 AGENTS.md §5(≤300 行/文件、组件复用优先、`@` alias、禁止 scoped 样式)
 - **聊天为什么不走 WebSocket**:Nuxt 4.5 新服务端引擎(`@nuxt/nitro-server`)对 h3 v1 的 `defineWebSocketHandler` 返回 426;SSE + POST 是纯 HTTP,行为稳定且满足聊天语义。若将来要双向高频同步(如协作白板)再评估
-- **持久化**:`server/.data/pomodoros.json`,读写集中在 `server/utils/store.ts`;换 SQLite 只动这一个文件
+- **持久化**:`server/utils/store.ts` 读写**项目根** `.data/pomodoros.json`(路径来自 `join(process.cwd(), '.data')`,不是 `server/.data/`);换 SQLite 只动这一个文件。`statsFor()` 已实现 today/streak/total/roomTodayCount 五个指标,供后续专注报告消费
 
 ## 6. 路线图
 

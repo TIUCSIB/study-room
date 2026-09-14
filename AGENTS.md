@@ -15,7 +15,7 @@
 | 框架 | Nuxt 4(Vue 3 + TS) | 全栈:前端 `app/`,服务端 `server/` |
 | 样式 | **Tailwind CSS v4** | `@tailwindcss/vite` 插件,见 §5 |
 | 实时 | **SSE + POST**(`server/api/chat/`) | 不用 WebSocket:Nuxt 4.5 新引擎兼容性差,SSE 纯 HTTP 更稳 |
-| 存储 | JSON 文件(`server/.data/`) | 单机自用够;换 DB 只动 `server/utils/store.ts` |
+| 存储 | JSON 文件(**项目根** `.data/pomodoros.json`) | 单机自用够;换 DB 只动 `server/utils/store.ts` |
 | 字体 | VT323(数字/拉丁)+ Fusion Pixel(中文) | 像素字栈见 `nuxt.config.ts`,全站禁用其他字体 |
 
 ## 3. 常用命令
@@ -32,14 +32,19 @@ pnpm preview    # 预览生产构建
 app/
 ├── components/     # UI 组件,自动导入
 ├── composables/    # useChat 等,状态与通信逻辑
-└── assets/css/     # main.css:Tailwind 入口 + @theme 设计令牌(唯一色源)
+├── assets/css/     # main.css:Tailwind 入口 + @theme 设计令牌(唯一色源)
+└── types.ts        # 跨组件共享类型(如 PanelKey)
 server/
-├── api/            # REST:chat(SSE+POST)、pomodoros、tracks
+├── api/            # REST:chat(SSE+POST)、pomodoros、tracks、presence
 └── utils/          # hub.ts(聊天广播中心)、store.ts(持久化+清洗)
 public/
-├── videos/         # scene.mp4(用户自备循环视频,可选)
+├── videos/         # scene.mp4 / scene.gif(用户自备循环场景,可选)
 └── music/          # 用户自备音乐文件,自动扫描进歌单
+.data/              # 运行时数据(pomodoros.json),已在 .gitignore
 ```
+
+> `.data/` 的路径由 `server/utils/store.ts` 的 `join(process.cwd(), '.data')` 决定,
+> 即**项目根**,不是 `server/.data/`。dev 与 build 的 cwd 都是项目根。
 
 职责红线:
 - 组件只管展示与交互;通信逻辑进 `composables/`,广播逻辑进 `server/utils/hub.ts`
@@ -50,7 +55,7 @@ public/
 
 1. **单文件 ≤ 300 行**(含模板与注释)。超了就拆组件 / 抽 composable / 抽常量文件。提交前自查:`wc -l`
 2. **组件复用优先**:写新 UI 前先看 `app/components/` 有没有现成的可复用或小改可用(如 `glass` 面板、按钮样式);确实没有才新建,且新组件尽量做成无业务依赖的可复用形态
-3. **路径别名**:跨目录 import 一律用 `@/`(指向 `app/`),如 `import type { ChatMessage } from '@/composables/useChat'`;禁止 `../../` 相对路径攀升(同目录内 `./` 除外)
+3. **路径别名**:跨目录 import 一律用 `@/`(指向 `app/`),如 `import type { ChatMessage } from '@/composables/useChat'`;禁止 `../../` 相对路径攀升(同目录内 `./` 除外)。**该规则只作用于 `app/`**:`server/` 侧没有 `@/`,`server/utils/*` 由 Nitro 自动导入,需显式引用时用相对路径(如 `server/api/chat/` 内写 `../../utils/hub`)
 4. **样式只用 Tailwind 工具类**:
    - 颜色/字体/动效一律引用 `main.css` `@theme` 里的令牌(`text-accent`、`bg-panel`、`animate-breathe`…),**组件内禁止硬编码色值/字号/圆角**
    - 风格工具类复用优先:`glass`(终端面板)、`glow` / `glow-info`(荧光字)、`crt-lines`(扫描线)、`crt-boot`(开机动画)
@@ -71,4 +76,4 @@ public/
 - 禁止引入 UI 组件库(Element/Ant 等)—— 本项目视觉高度定制,组件库是负资产
 - 禁止绕过 `sanitizeText` 直接落库/广播
 - 禁止在组件里写 fetch 封装(统一走 `$fetch` + composable)
-- 禁止把测试数据提交进 `server/.data/`
+- 禁止把测试数据提交进 `.data/`

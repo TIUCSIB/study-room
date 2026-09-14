@@ -1,13 +1,10 @@
-<script lang="ts">
-/** 面板标识:控件坞与 app.vue 共用 */
-export type PanelKey = 'pomodoro' | 'todo' | 'chat' | 'about'
-</script>
-
 <script setup lang="ts">
 /**
  * 右下角控件坞:像素图标按钮,切换番茄钟 / Todo / 聊天 / 关于面板;
  * 全屏按钮直接操作系统 API。悬停有中文 tooltip。
  */
+import type { PanelKey } from '@/types'
+
 const props = defineProps<{ active: PanelKey | null }>()
 const emit = defineEmits<{ toggle: [key: PanelKey] }>()
 

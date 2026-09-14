@@ -14,10 +14,11 @@ pnpm build      # 生产构建
 
 ## 用起来
 
-- **场景视频**:把一段循环视频命名为 `scene.mp4` 放进 `public/videos/`(版权自把关)。没有视频时页面显示代码渲染的雨夜氛围场景
-- **音乐**:把 lofi 音乐文件(mp3/flac/ogg/wav)丢进 `public/music/`,刷新即出现在播放器
-- **聊天**:进页起个昵称就能和房间里的人实时聊
-- **番茄钟**:25/50/自由三种模式,完成自动记录;数据在 `server/.data/pomodoros.json`
+- **场景背景**:三级回退 —— 把循环视频命名为 `scene.mp4` 放进 `public/videos/`(版权自把关);没有视频时用 `public/videos/scene.gif`;两者都没有则显示代码渲染的雨夜霓虹场景
+- **音乐**:把 lofi 音乐文件(mp3/flac/ogg/wav/m4a)丢进 `public/music/`,刷新即出现在播放器
+- **聊天**:进页起个昵称就能和房间里的人实时聊(SSE)
+- **番茄钟**:控件坞打开,时长在 5/25/50 分钟间轮换;完成或结束(满 1 分钟)自动记录,数据在项目根 `.data/pomodoros.json`
+- **Todo**:控件坞打开,纯本地 localStorage,不进服务端
 
 ## 文档
 
@@ -28,10 +29,13 @@ pnpm build      # 生产构建
 
 ```
 app/
-├── components/   # VideoBackdrop / MusicPlayer / ChatPanel / PomodoroCard / NicknameModal
+├── components/   # VideoBackdrop / BootGate / ListeningNow / MusicPlayer / ChatPanel
+│                 # PomodoroPanel / TodoPanel / AboutPanel / ControlDock / NicknameModal
 ├── composables/  # useChat(SSE 聊天)
-└── assets/css/   # Tailwind 入口 + @theme 设计令牌
+├── assets/css/   # Tailwind 入口 + @theme 设计令牌(唯一色源)
+└── types.ts      # 跨组件共享类型(PanelKey)
 server/
-├── api/          # chat(SSE+POST)/ pomodoros / tracks
-└── utils/        # hub(聊天广播)/ store(持久化)
+├── api/          # chat(SSE+POST)/ pomodoros / tracks / presence
+└── utils/        # hub(聊天广播)/ store(持久化+清洗)
+.data/            # 运行时数据 pomodoros.json(.gitignore 已排除)
 ```
