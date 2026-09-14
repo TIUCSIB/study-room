@@ -42,7 +42,7 @@
 2. **荧光字**:`glow` / `glow-info` 工具类 —— 多层 text-shadow 模拟 CRT 荧光粉(琥珀主色/雾蓝信息色)
 3. **扫描线**:`crt-lines` 工具类 —— 3px 周期横纹,`mix-blend-mode: overlay`,9s 缓慢下移
 4. **开机动画**:`crt-boot` —— 进站画面从一条横线展开并闪亮(scaleY 0→1 + brightness 14→1)
-5. **无卡片化**:文字直接铺在场景上(顶栏);必须的面板用 `glass`(近黑底 + 1px 暖描边 + 直角);进度条是 `▮▮▮▯▯` 字符块;按钮用**实心像素图标**(`pixel` 图标集 `-solid` 变体,经 `@nuxt/icon` 本地渲染,悬停显中文 tooltip;细线图标缩小会发虚,不用)。图标渲染统一走 `icon-pixel` 工具类 —— **24px 即原生网格 1:1,并 `shape-rendering: crispEdges` 关掉抗锯齿**,否则像素图被插值、与硬边像素字违和;要辉光用 `glow-icon`(`filter: drop-shadow`),因为 `glow` 的 `text-shadow` 对 SVG 图形无效。键盘操作:空格播放/暂停、←→ 切歌
+5. **无卡片化**:文字直接铺在场景上(顶栏);必须的面板用 `glass`(近黑底 + 1px 暖描边 + 直角);进度条是 `▮▮▮▯▯` 字符块;按钮用**像素图标**(`pixelarticons` 图标集,经 `@nuxt/icon` 本地渲染,悬停显中文 tooltip)。图标渲染统一走 `icon-pixel` 工具类 —— **24px 即原生网格 1:1,并 `shape-rendering: crispEdges` 关掉抗锯齿**,否则像素图被插值、与硬边像素字违和;要辉光用 `glow-icon`(`filter: drop-shadow`),因为 `glow` 的 `text-shadow` 对 SVG 图形无效。图标集选型与许可说明见 AGENTS.md §5.5。键盘操作:空格播放/暂停、←→ 切歌
 
 ### 色彩令牌(唯一来源)
 
@@ -124,7 +124,7 @@
 - 添加(≤60 字)、勾选完成(▣/▢ 字符块)、悬浮删除;头部显示剩余件数,文案轻暖
 
 ### 4.8 控件坞(ControlDock)与关于面板
-- 右下角一排 **实心像素图标按钮**(`pixel:clock-solid` / `check-list-solid` / `comment-solid` / `info-circle-solid`,全屏为 `expand-solid` ↔ `times-solid` 切换):番茄钟 / Todo / 聊天 / 关于 / 全屏;全屏走浏览器 Fullscreen API 并同步按钮态
+- 右下角一排 **像素图标按钮**(`pixelarticons:clock` / `checklist` / `comment` / `circle-info`,全屏为 `expand` ↔ `close` 切换):番茄钟 / Todo / 聊天 / 关于 / 全屏;全屏走浏览器 Fullscreen API 并同步按钮态
 - 同一时刻最多展开一个面板,面板堆叠在控件坞上方;「关于」为静态说明(是什么 + 快捷键)
 - 进站先只显示场景:左上打字机逐字打出 `listening now N` + 闪烁小点;完成后左下打出 `press any key to start` + 闪烁方块光标 ▮
 - 任意键/任意点击立即进入主界面(打字中途按也会跳过),主界面播放 `crt-boot` 通电动画

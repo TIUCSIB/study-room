@@ -9,10 +9,10 @@ const props = defineProps<{ active: PanelKey | null }>()
 const emit = defineEmits<{ toggle: [key: PanelKey] }>()
 
 const ITEMS: { key: PanelKey, icon: string, label: string }[] = [
-  { key: 'pomodoro', icon: 'pixel:clock-solid', label: '番茄钟' },
-  { key: 'todo', icon: 'pixel:check-list-solid', label: 'Todo' },
-  { key: 'chat', icon: 'pixel:comment-solid', label: '聊天' },
-  { key: 'about', icon: 'pixel:info-circle-solid', label: '关于' },
+  { key: 'pomodoro', icon: 'pixelarticons:clock', label: '番茄钟' },
+  { key: 'todo', icon: 'pixelarticons:checklist', label: 'Todo' },
+  { key: 'chat', icon: 'pixelarticons:comment', label: '聊天' },
+  { key: 'about', icon: 'pixelarticons:circle-info', label: '关于' },
 ]
 
 const fullscreen = ref(false)
@@ -50,7 +50,7 @@ onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFulls
       :title="fullscreen ? '退出全屏' : '全屏'"
       @click="toggleFullscreen"
     >
-      <Icon :name="fullscreen ? 'pixel:times-solid' : 'pixel:expand-solid'" class="icon-pixel glow-icon" />
+      <Icon :name="fullscreen ? 'pixelarticons:close' : 'pixelarticons:expand'" class="icon-pixel glow-icon" />
     </button>
   </nav>
 </template>

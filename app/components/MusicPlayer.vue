@@ -81,18 +81,18 @@ watch(volume, (v) => {
   <div class="glow text-[19px]">
     <div class="flex items-center gap-3">
       <button :aria-label="playing ? '暂停' : '播放'" @click="toggle">
-        <Icon name="pixel:pause-solid" v-if="playing" class="icon-pixel glow-icon" />
-        <Icon name="pixel:play-solid" v-else class="icon-pixel glow-icon" />
+        <Icon name="pixelarticons:pause" v-if="playing" class="icon-pixel glow-icon" />
+        <Icon name="pixelarticons:play" v-else class="icon-pixel glow-icon" />
       </button>
       <button :aria-label="shuffled ? '关闭随机' : '随机播放'"
         :class="shuffled ? 'text-accent' : 'text-cream/85 hover:text-cream'" @click="shuffled = !shuffled">
-        <Icon name="pixel:shuffle-solid" class="icon-pixel glow-icon" />
+        <Icon name="pixelarticons:shuffle" class="icon-pixel glow-icon" />
       </button>
       <button class="text-cream/85 hover:text-cream" aria-label="上一首" @click="prev">
-        <Icon name="pixel:angle-left-solid" class="icon-pixel glow-icon" />
+        <Icon name="pixelarticons:prev" class="icon-pixel glow-icon" />
       </button>
       <button class="text-cream/85 hover:text-cream" aria-label="下一首" @click="next">
-        <Icon name="pixel:angle-right-solid" class="icon-pixel glow-icon" />
+        <Icon name="pixelarticons:next" class="icon-pixel glow-icon" />
       </button>
       <span class="ml-1 flex items-center gap-[3px]">
         <button v-for="i in VOL_BLOCKS" :key="i" class="h-[22px] w-[10px]"
@@ -103,7 +103,8 @@ watch(volume, (v) => {
 
     <button class="glow-info mt-1 block max-w-[560px] truncate text-left text-[19px] text-cream/90 hover:brightness-125"
       :title="`${trackName}(点击切歌)`" @click="next">
-      <span class="text-dim">... </span>{{ trackName }}
+      <Icon name="pixelarticons:more-horizontal-sharp" class="icon-pixel glow-icon" />{{ trackName }}
+
     </button>
 
     <audio ref="audio" @play="playing = true" @pause="playing = false" @ended="next" />

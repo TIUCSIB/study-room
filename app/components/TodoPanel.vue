@@ -55,7 +55,7 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
         class="min-w-0 flex-1 border border-line bg-black/40 px-2.5 py-1.5 text-[17px] text-cream outline-none placeholder:text-dim/70 focus:border-accent/60"
       >
       <button type="submit" class="flex shrink-0 items-center px-1 text-accent" aria-label="添加">
-        <Icon name="pixel:arrow-right-solid" class="icon-pixel glow-icon" />
+        <Icon name="pixelarticons:arrow-right" class="icon-pixel glow-icon" />
       </button>
     </form>
 
@@ -73,7 +73,7 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
           aria-label="删除"
           @click="remove(t.id)"
         >
-          <Icon name="pixel:trash-solid" class="icon-pixel" />
+          <Icon name="pixelarticons:trash" class="icon-pixel" />
         </button>
       </li>
       <li v-if="todos.length === 0" class="mt-6 text-center text-dim">

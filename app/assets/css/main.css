@@ -97,7 +97,7 @@
 }
 
 /* 像素图标统一渲染。两条硬性要求:
-   1) 尺寸取 24px —— 即 @iconify-json/pixel 的原生网格,1:1 不缩放。非整数缩放(如 20px)
+   1) 尺寸取 24px —— 即 @iconify-json/pixelarticons 的原生网格,1:1 不缩放。非整数缩放(如 20px)
       会让浏览器把像素图插值,边缘发虚,与硬边的像素字并排必然违和。
    2) shape-rendering: crispEdges 关掉 SVG 抗锯齿。
    实测补充:@nuxt/icon 输出的是 width="1em" height="1em" 属性 + 内联 style="font-size:24px"

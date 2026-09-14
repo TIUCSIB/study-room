@@ -60,10 +60,12 @@ public/
    - 颜色/字体/动效一律引用 `main.css` `@theme` 里的令牌(`text-accent`、`bg-panel`、`animate-breathe`…),**组件内禁止硬编码色值/字号/圆角**
    - 风格工具类复用优先:`glass`(终端面板)、`glow` / `glow-info`(荧光字)、`crt-lines`(扫描线)、`crt-boot`(开机动画)
    - 组件不写 `<style>` 块;确有必要(复杂 keyframes 等)时集中放 `main.css`
-5. **图标统一用 `pixel` 图标集(实心粗笔画)**:通过 `@nuxt/icon` + `@iconify-json/pixel` 本地渲染,写法 `<Icon name="pixel:xxx-solid" class="icon-pixel" />`;优先选 `-solid` 变体(细线图标缩小后发虚,与场景不搭);新增图标前先在 `node_modules/@iconify-json/pixel/icons.json` 里确认图标名存在。
+5. **图标统一用 `pixelarticons` 图标集**:通过 `@nuxt/icon` + `@iconify-json/pixelarticons` 本地渲染,写法 `<Icon name="pixelarticons:xxx" class="icon-pixel" />`;新增图标前先在 `node_modules/.pnpm/@iconify-json+pixelarticons@*/node_modules/@iconify-json/pixelarticons/icons.json` 里确认图标名存在(1300+ 个,命名与旧库不同,别凭记忆写)。
+   **为什么是它**:MIT 许可(旧库 `pixel` 即 HackerNoon "Pixel Icon" 是 CC BY 4.0,**要求署名**,而本仓库是公开仓库);且它提供 `chevron-left` / `chevron-right` 等旧库没有的图标。
+   注意历史上本项目曾弃用 pixelarticons(旧记录写「细线图标缩小后发虚」),**那个结论是在 20px 渲染下得出的**;改用 24px 1:1 + `crispEdges` 后成因已消除,故现在重新采用。该库绝大多数图标是**描边风格**(1306 个里只有 53 个 `-solid`),视觉比旧库的实心剪影更轻 —— 这是有意的取舍,不要再去找不存在的 `-solid`。
    三条渲染硬性要求(都踩过坑):
    - **尺寸只用 `icon-pixel` 工具类,不要写 `size-5` 这类尺寸类**。该图标集原生网格是 24px,`icon-pixel` 同时钉住 24px(1:1)与 `shape-rendering: crispEdges`。20px 之类的非整数缩放会让浏览器插值像素图,边缘发虚,与硬边的像素字并排必然违和。注意 **inline SVG 上 `image-rendering: pixelated` 是无效的**,别指望它。
-   - **图标要发辉光必须用 `glow-icon`**。`glow` / `glow-info` 是 `text-shadow`,**对 SVG 图形完全无效** —— 曾经的 bug 就是两者混用导致"文字发光、图标死平"。`glow-icon` 才是 `filter: drop-shadow`。只加在"周围文字也发光"的地方;周围是素文字时不要加,否则制造新的不一致。
+   - **图标要发辉光必须用 `glow-icon`**。`glow` / `glow-info` 是 `text-shadow`,**对 SVG 图形完全无效** —— 曾经的 bug 就是两者混用导致"文字发光、图标死平"。`glow-icon` 才是 `filter: drop-shadow`,且参数是 `glow` 的弱化版(图标墨色面积大,照抄会过曝)。只加在"周围文字也发光"的地方;周围是素文字时不要加,否则制造新的不一致。
    - **禁止混用 emoji / 其他图标集**。例外:`▮`(块光标)、`▣` / `▢`(Todo 勾选)、音量块 `▮▮▮▯▯` 是 design.md §3.5/§4.7 刻意规定的**字符块**用法,属于风格元素而非图标,不算违规,不要"顺手改成图标"。
 6. 新增 npm 依赖前必须说明不可替代的理由
 

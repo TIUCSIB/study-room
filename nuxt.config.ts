@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   modules: ['@nuxt/icon'],
 
   icon: {
-    // 本地图标集(pixel:实心粗笔画像素图标),离线可用
+    // 本地图标集(pixelarticons,24 网格像素图标;MIT),离线可用。
+    // Nuxt Icon 会自动发现本地安装的集合,dev 日志里打印 "discovered local-installed 1 collections: pixelarticons"
     mode: 'svg',
     // 兜底尺寸:必须与图标原生网格(24px)一致,非整数缩放会把像素图插值糊边。
     // 具体组件仍应显式加 `icon-pixel` 工具类(它同时负责 crispEdges),见 AGENTS.md §5.5
