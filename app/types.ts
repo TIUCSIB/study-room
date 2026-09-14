@@ -5,9 +5,7 @@
  */
 
 /**
- * 可展开面板的标识,`app.vue` 与 `ControlDock.vue` 共用。
- *
- * 只有两个:番茄钟与 Todo 已归并为 `study`(面板内再用 tab 分);
- * 「关于」已并入设置弹窗,不再是面板;全屏是直接操作,也没有面板。
+ * 右下角控件坞可展开的面板标识,`app.vue` 与 `ControlDock.vue` 共用。
+ * 「关于」已并入设置弹窗,不再是面板;全屏与设置都是直接动作,也没有面板。
  */
-export type PanelKey = 'study' | 'chat'
+export type PanelKey = 'pomodoro' | 'todo' | 'chat'

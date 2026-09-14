@@ -1,16 +1,18 @@
 <script setup lang="ts">
 /**
- * 右下角控件坞:只剩两个高频入口 —— 学习(番茄钟 + Todo)与聊天。
- * 全屏与设置移到右上角与时钟同区(见 HeaderControls):那两项是低频的界面元信息,
- * 和「房间里的活动」不是一类,混在一起会让入口列表变长、权重不分。
+ * 右下角控件坞:一排像素图标按钮 —— 番茄钟 / Todo / 聊天 / 全屏 / 设置。
+ * 前二(番茄钟 / Todo)按「同一时刻最多展开一个面板,再点一次收起」切换;
+ * 全屏直接操作系统 API;设置打开设置弹窗。
+ * 悬停时在**按钮上方**显示自定义提示气泡(PixelTip),不用原生 `title`。
  */
 import type { PanelKey } from '@/types'
 
 const props = defineProps<{ active: PanelKey | null, unread: number }>()
-const emit = defineEmits<{ toggle: [key: PanelKey] }>()
+const emit = defineEmits<{ toggle: [key: PanelKey], settings: [] }>()
 
 const ITEMS: { key: PanelKey, icon: string, label: string }[] = [
-  { key: 'study', icon: 'pixelarticons:notebook', label: '学习' },
+  { key: 'pomodoro', icon: 'pixelarticons:clock', label: '番茄钟' },
+  { key: 'todo', icon: 'pixelarticons:checklist', label: 'Todo' },
   { key: 'chat', icon: 'pixelarticons:comment', label: '聊天' },
 ]
 
@@ -19,6 +21,20 @@ const items = computed(() => ITEMS.map(i => ({
   ...i,
   label: i.key === 'chat' && props.unread > 0 ? `聊天 · ${props.unread} 条新消息` : i.label,
 })))
+
+const fullscreen = ref(false)
+
+function toggleFullscreen() {
+  if (document.fullscreenElement) void document.exitFullscreen()
+  else void document.documentElement.requestFullscreen()
+}
+
+function syncFullscreen() {
+  fullscreen.value = !!document.fullscreenElement
+}
+
+onMounted(() => document.addEventListener('fullscreenchange', syncFullscreen))
+onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFullscreen))
 </script>
 
 <template>
@@ -39,6 +55,26 @@ const items = computed(() => ITEMS.map(i => ({
         class="animate-breathe absolute -top-0.5 -right-0.5 size-1.5 bg-accent"
       />
       <PixelTip :label="item.label" />
+    </button>
+
+    <button
+      class="group relative transition-colors"
+      :class="fullscreen ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
+      :aria-pressed="fullscreen"
+      :aria-label="fullscreen ? '退出全屏' : '全屏'"
+      @click="toggleFullscreen"
+    >
+      <Icon :name="fullscreen ? 'pixelarticons:close' : 'pixelarticons:expand'" class="icon-pixel glow-icon" />
+      <PixelTip :label="fullscreen ? '退出全屏' : '全屏'" align="end" />
+    </button>
+
+    <button
+      class="group relative text-cream/80 transition-colors hover:text-cream"
+      aria-label="设置"
+      @click="emit('settings')"
+    >
+      <Icon name="pixelarticons:gear" class="icon-pixel glow-icon" />
+      <PixelTip label="设置" align="end" />
     </button>
   </nav>
 </template>

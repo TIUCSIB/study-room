@@ -100,9 +100,8 @@ function showToast(text: string) {
 
     <!-- 主界面 -->
     <div v-else class="relative h-full">
-      <!-- 右上角:全屏/设置 + 时钟。上/右内边距与左侧 ListeningNow 的 p-5 对齐,否则两角错位 -->
-      <header class="relative z-2 flex items-start justify-end gap-5 px-5 pt-5">
-        <HeaderControls class="mt-[3px]" @settings="settingsOpen = true" />
+      <!-- 右上角时钟:上/右内边距与左侧 ListeningNow 的 p-5 对齐,否则两角错位 -->
+      <header class="relative z-2 flex items-start justify-end px-5 pt-5">
         <div class="flex flex-col items-end">
           <div class="glow font-num text-[30px] leading-none text-cream">
             {{ clockParts[0] }}<span class="animate-colon">:</span>{{ clockParts[1] }}
@@ -115,13 +114,15 @@ function showToast(text: string) {
 
       <!-- 右下角控件坞 + 当前展开的面板(同一时刻一个)。四角内边距统一 20px,见 design.md §2 -->
       <div class="absolute right-5 bottom-5 z-2 flex flex-col items-end gap-2">
-        <StudyPanel v-if="nick && activePanel === 'study'" :nick="nick" @toast="showToast" />
+        <PomodoroPanel v-if="nick && activePanel === 'pomodoro'" :nick="nick" @toast="showToast" />
+        <TodoPanel v-if="activePanel === 'todo'" />
 
         <ChatPanel v-if="nick && activePanel === 'chat'" :messages="chat.messages.value"
           :online="chat.online.value" :nick-list="chat.nickList.value" :connected="chat.connected.value"
           @send="chat.send" />
 
-        <ControlDock :active="activePanel" :unread="unread" @toggle="togglePanel" />
+        <ControlDock :active="activePanel" :unread="unread" @toggle="togglePanel"
+          @settings="settingsOpen = true" />
       </div>
 
       <Transition name="fade">

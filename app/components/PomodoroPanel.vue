@@ -1,7 +1,6 @@
 <script setup lang="ts">
 /**
- * 番茄钟内容(docs/design.md §4.3)。宿主是 StudyPanel —— 本组件**不自带 glass 外壳**,
- * 只负责内容,否则会「玻璃里套玻璃」。
+ * 番茄钟面板(lofi.cafe 式,docs/design.md §4.3):
  * 大号像素倒计时;空闲点数字在预设间轮换;运行中 +5:00 随时加时。
  * Pause/Resume/End;完成或结束满 1 分钟 → POST /api/pomodoros 入账。
  */
@@ -114,7 +113,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center">
+  <section class="glass flex w-[260px] flex-col items-center px-4 py-4" aria-label="番茄钟">
     <button
       class="group font-num glow relative text-[56px] leading-none text-accent"
       :aria-label="running ? '运行中,不能改时长' : '点击切换时长预设'"
@@ -140,5 +139,5 @@ onBeforeUnmount(() => {
     </div>
 
     <p class="mt-2 text-[15px] text-dim">{{ running ? '专注中,别分心太久哦' : '点数字换时长,开始就少看手机' }}</p>
-  </div>
+  </section>
 </template>
