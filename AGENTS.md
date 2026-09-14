@@ -66,6 +66,7 @@ public/
    三条渲染硬性要求(都踩过坑):
    - **尺寸只用 `icon-pixel` 工具类,不要写 `size-5` 这类尺寸类**。该图标集原生网格是 24px,`icon-pixel` 同时钉住 24px(1:1)与 `shape-rendering: crispEdges`。20px 之类的非整数缩放会让浏览器插值像素图,边缘发虚,与硬边的像素字并排必然违和。注意 **inline SVG 上 `image-rendering: pixelated` 是无效的**,别指望它。
    - **图标要发辉光必须用 `glow-icon`**。`glow` / `glow-info` 是 `text-shadow`,**对 SVG 图形完全无效** —— 曾经的 bug 就是两者混用导致"文字发光、图标死平"。`glow-icon` 才是 `filter: drop-shadow`,且参数是 `glow` 的弱化版(图标墨色面积大,照抄会过曝)。只加在"周围文字也发光"的地方;周围是素文字时不要加,否则制造新的不一致。
+   - **图标要和文字排在同一行,容器必须是 flex**。Tailwind 的 preflight 会把 `svg` 设为 `display: block`,所以图标放在普通块级容器里会**强制把后面的文字挤到下一行**(曾因此把播放器歌名行拆成两行)。正确写法:`class="flex items-center gap-1.5"`,图标加 `shrink-0`,文字加 `min-w-0 truncate`。
    - **禁止混用 emoji / 其他图标集**。例外:`▮`(块光标)、`▣` / `▢`(Todo 勾选)、音量块 `▮▮▮▯▯` 是 design.md §3.5/§4.7 刻意规定的**字符块**用法,属于风格元素而非图标,不算违规,不要"顺手改成图标"。
 6. 新增 npm 依赖前必须说明不可替代的理由
 

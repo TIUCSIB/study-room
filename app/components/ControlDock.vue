@@ -12,7 +12,7 @@ const ITEMS: { key: PanelKey, icon: string, label: string }[] = [
   { key: 'pomodoro', icon: 'pixelarticons:clock', label: '番茄钟' },
   { key: 'todo', icon: 'pixelarticons:checklist', label: 'Todo' },
   { key: 'chat', icon: 'pixelarticons:comment', label: '聊天' },
-  { key: 'about', icon: 'pixelarticons:circle-info', label: '关于' },
+  { key: 'about', icon: 'pixelarticons:ai-user-circle', label: '关于' },
 ]
 
 const fullscreen = ref(false)
@@ -32,24 +32,13 @@ onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFulls
 
 <template>
   <nav class="flex items-center gap-3.5" aria-label="功能控件">
-    <button
-      v-for="item in ITEMS"
-      :key="item.key"
-      class="transition-colors"
+    <button v-for="item in ITEMS" :key="item.key" class="transition-colors"
       :class="props.active === item.key ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
-      :aria-pressed="props.active === item.key"
-      :title="item.label"
-      @click="emit('toggle', item.key)"
-    >
+      :aria-pressed="props.active === item.key" :title="item.label" @click="emit('toggle', item.key)">
       <Icon :name="item.icon" class="icon-pixel glow-icon" />
     </button>
-    <button
-      class="transition-colors"
-      :class="fullscreen ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
-      :aria-pressed="fullscreen"
-      :title="fullscreen ? '退出全屏' : '全屏'"
-      @click="toggleFullscreen"
-    >
+    <button class="transition-colors" :class="fullscreen ? 'glow text-accent' : 'text-cream/80 hover:text-cream'"
+      :aria-pressed="fullscreen" :title="fullscreen ? '退出全屏' : '全屏'" @click="toggleFullscreen">
       <Icon :name="fullscreen ? 'pixelarticons:close' : 'pixelarticons:expand'" class="icon-pixel glow-icon" />
     </button>
   </nav>
