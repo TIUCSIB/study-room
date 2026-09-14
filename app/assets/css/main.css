@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/*
+ * 设计令牌 —— 唯一来源 docs/design.md §色彩令牌。
+ * 风格:像素电台(CRT 复古终端),参考 lofi.cafe。
+ * 组件里禁止出现令牌之外的颜色;改色先改设计文档,再改这里。
+ */
+@theme {
+  --color-void: #0D0A12;               /* 页面底色(更黑,衬托荧光) */
+  --color-panel: rgb(10 8 14 / 0.62);  /* 终端面板底 */
+  --color-line: rgb(246 193 119 / 0.22); /* 面板描边(暖) */
+  --color-accent: #F6C177;             /* 暖琥珀:主行动色 */
+  --color-info: #A8C4E8;               /* 冷雾蓝:次级/信息 */
+  --color-cream: #EBEBEB;              /* 主文字(荧光白) */
+  --color-dim: #9B93A8;                /* 弱文字 */
+  --color-danger: #E88A8A;             /* 结束/危险 */
+  --color-ink: #17121F;                /* 实色按钮上的深字 */
+
+  /* 像素字栈:VT323 管数字/拉丁,Fusion Pixel 管中文 */
+  --font-num: 'VT323', 'Fusion Pixel 12px Proportional Simplified Chinese', monospace;
+  --font-body: 'VT323', 'Fusion Pixel 12px Proportional Simplified Chinese', 'Fusion Pixel 12px Proportional Latin', monospace;
+
+  --animate-spin-slow: spin 3s linear infinite;
+  --animate-breathe: breathe 4s ease-in-out infinite;
+  --animate-drift: drift 14s ease-in-out infinite alternate;
+  --animate-fall: fall 1s linear infinite;
+  --animate-blink: blink 1s steps(2) infinite;
+  --animate-scan-drift: scan-drift 9s linear infinite;
+  --animate-flicker: flicker 5s steps(12) infinite;
+  --animate-colon: colon 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.92; }
+  50% { opacity: 1; text-shadow: var(--glow-strong); }
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(4vw, -3vh) scale(1.12); }
+}
+
+@keyframes fall {
+  to { transform: translateY(120vh); }
+}
+
+@keyframes blink {
+  50% { opacity: 0.55; }
+}
+
+/* 时钟冒号:每秒硬切换,像时间在走 */
+@keyframes colon {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes scan-drift {
+  from { background-position-y: 0; }
+  to { background-position-y: 84px; }
+}
+
+@keyframes flicker {
+  0%, 91%, 94%, 100% { opacity: 1; }
+  92% { opacity: 0.86; }
+  93% { opacity: 0.94; }
+}
+
+/* CRT 荧光粉辉光:主文字用 */
+@utility glow {
+  --glow-strong: 0 0 2px rgb(246 193 119 / 0.9), 0 0 10px rgb(246 150 80 / 0.45);
+  text-shadow:
+    0 0 1px rgb(255 230 200 / 0.9),
+    0 0 2px rgb(246 193 119 / 0.55),
+    var(--glow-strong);
+}
+
+/* 冷色荧光(信息/他人昵称) */
+@utility glow-info {
+  text-shadow:
+    0 0 1px rgb(220 235 255 / 0.8),
+    0 0 2px rgb(168 196 232 / 0.5),
+    0 0 8px rgb(120 160 220 / 0.35);
+}
+
+/* CRT 扫描线覆盖层(参考 lofi.cafe:3px 周期 + overlay 混合 + 缓慢下移) */
+@utility crt-lines {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.28) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: overlay;
+  animation: scan-drift 9s linear infinite;
+}
+
+/* CRT 通电开机:整页从一条横线展开并闪亮(lofi.cafe 原版参数) */
+@keyframes crt-boot {
+  0% {
+    transform: scaleY(0) scaleX(0);
+    filter: brightness(15) blur(0px);
+  }
+  20% {
+    transform: scaleY(0.02) scaleX(0.8);
+    filter: brightness(15) blur(0px);
+  }
+  100% {
+    transform: scaleY(1) scaleX(1);
+    filter: brightness(1);
+  }
+}
+
+@utility crt-boot {
+  animation: crt-boot 1.2s 0.2s both;
+  animation-timing-function: cubic-bezier(0.2, -0.1, 0, 1);
+}
+
+/* 通用终端面板(全站复用) */
+@utility glass {
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5), 0 8px 32px rgb(0 0 0 / 0.5);
+}
+
+@layer base {
+  html,
+  body,
+  #__nuxt {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    background: var(--color-void);
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    font-size: 19px;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(246 193 119 / 0.3);
+    border-radius: 0;
+  }
+}
