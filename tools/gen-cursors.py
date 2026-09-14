@@ -4,9 +4,13 @@
 没有生成器,这些 PNG 就是不可维护的二进制黑盒。
 
 用法:
-    python tools/gen-cursors.py              # 默认样式 B,写入 public/cursors/
-    python tools/gen-cursors.py --style A
+    python tools/gen-cursors.py              # 默认样式 D(= 仓库当前采用的),写入 public/cursors/
+    python tools/gen-cursors.py --style B
     python tools/gen-cursors.py --preview    # 只打印 ASCII 形状,不写文件
+
+DEFAULT_STYLE 必须与仓库里实际入库的那套一致 —— 否则谁裸跑一次就会把资源悄悄
+换回别的样式。换样式时:①`--style X` 重跑 ②把这里的默认值改成 X ③同步 main.css 注释与
+design.md §3 ④核对脚本打印的热区是否与 main.css 里的一致。
 
 为什么是自绘而不是用现成素材:pixelarticons 官方有免费光标(风格与图标集
 同源),但那是**独立产品**,免费页未声明许可,官方文档明确 Pro 包不许再分发。
@@ -100,7 +104,7 @@ STYLES = {
     "C": ("无描边:纯奶白实心", ARROW, (CREAM, None), (AMBER, None)),
     "D": ("暖边:奶白实心 + 琥珀描边", ARROW, (CREAM, AMBER), (AMBER, CREAM)),
 }
-DEFAULT_STYLE = "B"
+DEFAULT_STYLE = "D"
 
 
 def compose(shape, fill, outline):
