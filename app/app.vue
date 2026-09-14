@@ -94,10 +94,10 @@ function showToast(text: string) {
         </div>
       </header>
 
-      <MusicPlayer class="absolute bottom-4 left-5 z-2" />
+      <MusicPlayer class="absolute bottom-5 left-5 z-2" />
 
-      <!-- 右下角控件坞 + 当前展开的面板(同一时刻一个) -->
-      <div class="absolute right-5 bottom-4 z-2 flex flex-col items-end gap-2">
+      <!-- 右下角控件坞 + 当前展开的面板(同一时刻一个)。四角内边距统一 20px,见 design.md §2 -->
+      <div class="absolute right-5 bottom-5 z-2 flex flex-col items-end gap-2">
         <PomodoroPanel v-if="nick && activePanel === 'pomodoro'" :nick="nick" @toast="showToast" />
         <TodoPanel v-if="activePanel === 'todo'" />
         <AboutPanel v-if="activePanel === 'about'" />
