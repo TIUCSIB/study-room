@@ -39,7 +39,9 @@ server/
 └── utils/          # hub.ts(聊天广播中心)、store.ts(持久化+清洗)
 public/
 ├── videos/         # scene.mp4 / scene.gif(用户自备循环场景,可选)
-└── music/          # 用户自备音乐文件,自动扫描进歌单
+├── music/          # 用户自备音乐文件,自动扫描进歌单
+└── cursors/        # 自绘像素光标 PNG(由 tools/gen-cursors.py 生成)
+tools/               # 一次性资源生成脚本(不进构建产物)
 .data/              # 运行时数据(pomodoros.json),已在 .gitignore
 ```
 
@@ -69,11 +71,12 @@ public/
    - **图标要和文字排在同一行,容器必须是 flex**。Tailwind 的 preflight 会把 `svg` 设为 `display: block`,所以图标放在普通块级容器里会**强制把后面的文字挤到下一行**(曾因此把播放器歌名行拆成两行)。正确写法:`class="flex items-center gap-1.5"`,图标加 `shrink-0`,文字加 `min-w-0 truncate`。
    - **禁止混用 emoji / 其他图标集**。例外:`▮`(块光标)、`▣` / `▢`(Todo 勾选)、音量块 `▮▮▮▯▯` 是 design.md §3.5/§4.7 刻意规定的**字符块**用法,属于风格元素而非图标,不算违规,不要"顺手改成图标"。
 6. 新增 npm 依赖前必须说明不可替代的理由
-7. **光标用自绘像素光标(`public/cursors/`)**:`main.css` 的 `@layer base` 里统一挂载,`html` 用 `default.png`、`button`/`a`/`[role=button]` 用 `pointer.png`、`input`/`textarea` 用 `text.png`。三条硬约束:
-   - **尺寸必须 ≤32×32** —— 浏览器普遍不接受更大的 url 光标,网格就定 32。
-   - **坐标是热区,必须对准**:箭头类对准尖端 `2 2`,`text` 取 I 型中心 `16 16`。写错会让点击位置偏移,比"不好看"严重得多。
+7. **光标用自绘像素光标(`public/cursors/`)**:资源由 `tools/gen-cursors.py` 生成(**改形状/配色一律改脚本重跑,不要直接编辑 PNG**),`main.css` 的 `@layer base` 里统一挂载:`html` → `default.png`、`a`/`button`/`[role=button]`/`summary` → `pointer.png`、`input`/`textarea` → `text.png`、`button:disabled`/`[aria-disabled=true]` → `not-allowed.png`。四条硬约束:
+   - **尺寸必须 ≤32×32** —— 浏览器普遍不接受更大的 url 光标,生成器网格就定死 32。
+   - **坐标是热区,必须与生成器输出一致**。指针类取图案**左上角极值像素**(描边会把尖端顶出去 1px,当前是 `1 1`);居中类取外接框中心(当前 `15 15`)。**写错会让点击位置偏移,比「不好看」严重得多**;脚本每次运行都会打印各文件的热区,照抄即可。
    - **列表末尾必须留原生关键字兜底**(`..., default`),图片加载失败时浏览器会回退。
-   **禁止引入第三方光标素材**:这类素材常是「独立产品、许可未明」(pixelarticons 的免费光标即如此,与它 MIT 的图标集不是一回事),不得放进公开仓库。需要新光标就照着 `public/cursors/` 的网格与配色自绘。
+   - **禁用态必须有 `not-allowed`**。它是**语义信号**,刻意用灰色而非主题色 —— 缺了它,禁用按钮看起来和可点按钮一样。
+   **禁止引入第三方光标素材**:这类素材常是「独立产品、许可未明」(pixelarticons 的免费光标即如此,与它 MIT 的图标集不是一回事),不得放进公开仓库。需要新光标就照着 `tools/gen-cursors.py` 的网格与配色自绘。
 
 ## 6. 验收流程(Definition of Done)
 

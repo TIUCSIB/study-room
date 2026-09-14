@@ -181,31 +181,39 @@
     overflow: hidden;
   }
 
-  button {
-    cursor: pointer;
-  }
-
-  /* 像素光标:32×32 自绘(public/cursors/),与 pixelarticons 图标同一套视觉语言。
+  /* 像素光标:32×32 自绘,生成器见 tools/gen-cursors.py(资源在 public/cursors/)。
+     与 pixelarticons 图标同一套视觉语言:近黑填充 + 1px 浅描边,而非「实心 + 描边」。
      三点约束:
-     1) 浏览器普遍只接受 ≤32×32 的 url 光标,所以网格就定 32;
-     2) 坐标是**热区**,default/pointer 对准箭头尖端 (2,2),text 取 I 型中心 (16,16);
+     1) 浏览器普遍只接受 ≤32×32 的 url 光标,所以网格定死 32;
+     2) 坐标是**热区**,写错会让点击点整体偏移。指针类取图案的左上角极值像素 ——
+        描边会把尖端顶出去 1px(填充尖端 (2,2) → 视觉尖端 (1,1)),所以是 1 1;
+        居中类取外接框中心。**改形状后必须重跑生成器取新值**,别照抄。
      3) 列表末尾必须留原生关键字兜底 —— 图片加载失败时浏览器会用它。
      第三方光标素材多为「独立产品、许可未明」(pixelarticons 的光标即如此),
      不得入公开仓库;这套是自绘的,可自由使用。 */
   html {
-    cursor: url('/cursors/default.png') 2 2, default;
+    cursor: url('/cursors/default.png') 1 1, default;
   }
 
   a,
   button,
   [role="button"],
   summary {
-    cursor: url('/cursors/pointer.png') 2 2, pointer;
+    cursor: url('/cursors/pointer.png') 1 1, pointer;
   }
 
   input,
   textarea {
-    cursor: url('/cursors/text.png') 16 16, text;
+    cursor: url('/cursors/text.png') 15 15, text;
+  }
+
+  /* 禁用态。项目里两处禁用按钮(番茄钟运行中改时长、昵称未输入时确认)此前
+     显示的是普通指针,语义是错的 —— 点上去才知道不可用。
+     not-allowed 刻意用灰而非主题色:它是语义信号,不是风格元素,需要与其余
+     三个拉开。 */
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: url('/cursors/not-allowed.png') 15 15, not-allowed;
   }
 
   ::-webkit-scrollbar {
