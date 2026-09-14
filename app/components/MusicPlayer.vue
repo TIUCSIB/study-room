@@ -103,7 +103,8 @@ watch(volume, (v) => {
 
     <!-- 歌名行:必须 flex —— Tailwind preflight 把 svg 设为 display:block,
          图标与文字放进普通块级容器会被强制换行 -->
-    <button class="glow-info mt-1 flex max-w-[560px] items-center gap-1.5 text-left text-[19px] text-cream/90 hover:brightness-125"
+    <button
+      class="glow-info mt-3 flex max-w-[560px] items-center gap-3 text-left text-[14px] text-cream/90 hover:brightness-125"
       :title="`${trackName}(点击切歌)`" @click="next">
       <Icon name="pixelarticons:more-horizontal-sharp" class="icon-pixel glow-icon shrink-0" />
       <span class="min-w-0 truncate">{{ trackName }}</span>

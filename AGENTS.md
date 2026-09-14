@@ -69,6 +69,11 @@ public/
    - **图标要和文字排在同一行,容器必须是 flex**。Tailwind 的 preflight 会把 `svg` 设为 `display: block`,所以图标放在普通块级容器里会**强制把后面的文字挤到下一行**(曾因此把播放器歌名行拆成两行)。正确写法:`class="flex items-center gap-1.5"`,图标加 `shrink-0`,文字加 `min-w-0 truncate`。
    - **禁止混用 emoji / 其他图标集**。例外:`▮`(块光标)、`▣` / `▢`(Todo 勾选)、音量块 `▮▮▮▯▯` 是 design.md §3.5/§4.7 刻意规定的**字符块**用法,属于风格元素而非图标,不算违规,不要"顺手改成图标"。
 6. 新增 npm 依赖前必须说明不可替代的理由
+7. **光标用自绘像素光标(`public/cursors/`)**:`main.css` 的 `@layer base` 里统一挂载,`html` 用 `default.png`、`button`/`a`/`[role=button]` 用 `pointer.png`、`input`/`textarea` 用 `text.png`。三条硬约束:
+   - **尺寸必须 ≤32×32** —— 浏览器普遍不接受更大的 url 光标,网格就定 32。
+   - **坐标是热区,必须对准**:箭头类对准尖端 `2 2`,`text` 取 I 型中心 `16 16`。写错会让点击位置偏移,比"不好看"严重得多。
+   - **列表末尾必须留原生关键字兜底**(`..., default`),图片加载失败时浏览器会回退。
+   **禁止引入第三方光标素材**:这类素材常是「独立产品、许可未明」(pixelarticons 的免费光标即如此,与它 MIT 的图标集不是一回事),不得放进公开仓库。需要新光标就照着 `public/cursors/` 的网格与配色自绘。
 
 ## 6. 验收流程(Definition of Done)
 

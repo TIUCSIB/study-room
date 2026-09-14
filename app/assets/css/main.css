@@ -185,6 +185,29 @@
     cursor: pointer;
   }
 
+  /* 像素光标:32×32 自绘(public/cursors/),与 pixelarticons 图标同一套视觉语言。
+     三点约束:
+     1) 浏览器普遍只接受 ≤32×32 的 url 光标,所以网格就定 32;
+     2) 坐标是**热区**,default/pointer 对准箭头尖端 (2,2),text 取 I 型中心 (16,16);
+     3) 列表末尾必须留原生关键字兜底 —— 图片加载失败时浏览器会用它。
+     第三方光标素材多为「独立产品、许可未明」(pixelarticons 的光标即如此),
+     不得入公开仓库;这套是自绘的,可自由使用。 */
+  html {
+    cursor: url('/cursors/default.png') 2 2, default;
+  }
+
+  a,
+  button,
+  [role="button"],
+  summary {
+    cursor: url('/cursors/pointer.png') 2 2, pointer;
+  }
+
+  input,
+  textarea {
+    cursor: url('/cursors/text.png') 16 16, text;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
   }
