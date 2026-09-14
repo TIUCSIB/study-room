@@ -96,7 +96,7 @@ watch(volume, (v) => {
       </button>
       <span class="ml-1 flex items-center gap-[3px]">
         <button v-for="i in VOL_BLOCKS" :key="i" class="h-[14px] w-[6px]"
-          :class="i <= filledVol ? 'bg-cream' : 'bg-cream/25'"
+          :class="i <= filledVol ? 'bg-accent' : 'bg-accent/25'"
           :aria-label="`音量 ${Math.round((i / VOL_BLOCKS) * 100)}%`" @click="setVolume(i)" />
       </span>
     </div>
