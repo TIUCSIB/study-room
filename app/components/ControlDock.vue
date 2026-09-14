@@ -4,6 +4,13 @@
  * 前四者按「同一时刻最多展开一个面板,再点一次收起」切换;
  * 全屏直接操作系统 API;设置打开设置弹窗。
  * 悬停时在**按钮上方**显示自定义提示气泡(PixelTip),不用原生 `title`。
+ *
+ * 气泡一律用 PixelTip 默认的**居中**对齐(正对其图标),不要给靠右的几个单独传贴边对齐:
+ * 2026-09-14 曾给「全屏 / 设置」传了贴右对齐,结果这两个气泡相对各自图标左偏约 13px,
+ * 与其余四个「居中」的气泡不是同一条规则,看起来就是歪的。
+ * 居中不会溢出视口 —— 实测最宽的两个:「退出全屏」约 74px,右伸 25px,而该按钮右缘距视口
+ * 右缘还有 58px(设置按钮 24 + 间距 14 + 边距 20);「设置」右伸约 11px,边距有 20px。
+ * 若将来加更长的文案或更靠右的按钮,再按同样的算法复核一次。
  */
 import type { PanelKey } from '@/types'
 
@@ -54,13 +61,13 @@ onBeforeUnmount(() => document.removeEventListener('fullscreenchange', syncFulls
       :class="fullscreen ? 'glow text-accent' : 'text-cream/80 hover:text-cream'" :aria-pressed="fullscreen"
       :aria-label="fullscreen ? '退出全屏' : '全屏'" @click="toggleFullscreen">
       <Icon :name="fullscreen ? 'pixelarticons:close' : 'pixelarticons:expand'" class="icon-pixel glow-icon" />
-      <PixelTip :label="fullscreen ? '退出全屏' : '全屏'" align="end" />
+      <PixelTip :label="fullscreen ? '退出全屏' : '全屏'" />
     </button>
 
     <button class="group relative text-cream/80 transition-colors hover:text-cream" aria-label="设置"
       @click="emit('settings')">
       <Icon name="pixelarticons:settings-2-sharp" class="icon-pixel glow-icon" />
-      <PixelTip label="设置" align="end" />
+      <PixelTip label="设置" />
     </button>
   </nav>
 </template>
