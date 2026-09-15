@@ -65,6 +65,11 @@ function togglePanel(key: PanelKey) {
   activePanel.value = activePanel.value === key ? null : key
 }
 
+/** 面板是模态后,坞按钮被遮罩挡住点不到,收起只能靠 Esc / 点遮罩 / 面板里的「关闭」 */
+function closePanel() {
+  activePanel.value = null
+}
+
 /**
  * 未读数。聊天是否「有人说话」不该只有点开才知道 —— 那是 §1 说的陪伴感。
  * 只算别人的聊天消息,系统消息与自己的发言不计。
@@ -112,28 +117,38 @@ function showToast(text: string) {
 
       <MusicPlayer class="absolute bottom-5 left-5 z-2" />
 
-      <!-- 右下角控件坞 + 当前展开的面板(同一时刻一个)。四角内边距统一 20px,见 design.md §2 -->
-      <div class="absolute right-5 bottom-5 z-2 flex flex-col items-end gap-2">
-        <PomodoroPanel v-if="nick && activePanel === 'pomodoro'" :nick="nick" @toast="showToast" />
-        <TodoPanel v-if="activePanel === 'todo'" />
+      <!-- 右下角只剩控件坞本身:面板已改为居中模态(见文件末尾),不再贴着坞向上展开。
+           四角内边距统一 20px,见 design.md §2 -->
+      <ControlDock class="absolute right-5 bottom-5 z-2" :active="activePanel" :unread="unread"
+        @toggle="togglePanel" @settings="settingsOpen = true" />
 
-        <ChatPanel v-if="nick && activePanel === 'chat'" :messages="chat.messages.value"
-          :online="chat.online.value" :nick-list="chat.nickList.value" :connected="chat.connected.value"
-          @send="chat.send" />
-
-        <UserPanel v-if="activePanel === 'user'" :nick="nick" :online="chat.online.value"
-          :nick-list="chat.nickList.value" :connected="chat.connected.value" @nick="confirmNick" />
-
-        <ControlDock :active="activePanel" :unread="unread" @toggle="togglePanel"
-          @settings="settingsOpen = true" />
-      </div>
-
+      <!-- z 必须高于模态遮罩(z-50):番茄钟入账的提示要在模态之上才看得见 -->
       <Transition name="fade">
-        <div v-if="toast" class="glass glow fixed top-[60px] left-1/2 z-40 -translate-x-1/2 px-4 py-2 text-accent">
+        <div v-if="toast" class="glass glow fixed top-[60px] left-1/2 z-[60] -translate-x-1/2 px-4 py-2 text-accent">
           {{ toast }}
         </div>
       </Transition>
     </div>
+
+    <!-- 面板统一以居中模态呈现(2026-09-15 定)。外壳走 ModalShell,面板自身只出内容 -->
+    <ModalShell v-if="nick && activePanel === 'pomodoro'" label="番茄钟" @close="closePanel">
+      <PomodoroPanel :nick="nick" @toast="showToast" @close="closePanel" />
+    </ModalShell>
+
+    <ModalShell v-if="activePanel === 'todo'" label="今日待办" @close="closePanel">
+      <TodoPanel @close="closePanel" />
+    </ModalShell>
+
+    <ModalShell v-if="nick && activePanel === 'chat'" label="自习室聊天" @close="closePanel">
+      <ChatPanel :messages="chat.messages.value" :online="chat.online.value"
+        :nick-list="chat.nickList.value" :connected="chat.connected.value" @send="chat.send"
+        @close="closePanel" />
+    </ModalShell>
+
+    <ModalShell v-if="activePanel === 'user'" label="我的信息" @close="closePanel">
+      <UserPanel :nick="nick" :online="chat.online.value" :nick-list="chat.nickList.value"
+        :connected="chat.connected.value" @nick="confirmNick" @close="closePanel" />
+    </ModalShell>
 
     <SettingsModal v-if="settingsOpen" :nick="nick" @close="settingsOpen = false" @nick="confirmNick" />
     <NicknameModal v-if="nickReady && started && !nick" @confirm="confirmNick" />

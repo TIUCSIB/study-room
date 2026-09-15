@@ -18,7 +18,7 @@ const props = defineProps<{
   connected: boolean
 }>()
 
-const emit = defineEmits<{ nick: [value: string] }>()
+const emit = defineEmits<{ nick: [value: string], close: [] }>()
 
 const stats = ref<PomodoroStats | null>(null)
 const editing = ref(false)
@@ -59,7 +59,8 @@ const people = computed(() => {
 </script>
 
 <template>
-  <section class="glass flex w-[320px] flex-col px-3.5 py-3" aria-label="我的信息">
+  <!-- 外壳(glass 边框与宽度)由 ModalShell 提供,面板自身只出内容,不再自带 glass -->
+  <section class="flex flex-col px-5 py-5" aria-label="我的信息">
     <header class="mb-2.5 flex items-center gap-2">
       <span class="flex size-8 shrink-0 items-center justify-center border border-line text-accent">
         <Icon name="pixelarticons:user" class="icon-pixel" />
@@ -126,5 +127,9 @@ const people = computed(() => {
         <span v-if="people.length === 0" class="text-dim">连上后显示</span>
       </div>
     </div>
+
+    <button class="glow mt-5 w-full py-2 text-[19px] text-accent hover:brightness-125" @click="emit('close')">
+      [ 关闭 ]
+    </button>
   </section>
 </template>

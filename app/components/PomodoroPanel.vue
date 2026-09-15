@@ -7,7 +7,7 @@
 import { POMODORO_MINUTES, usePomodoroMinutes } from '@/composables/useSettings'
 
 const props = defineProps<{ nick: string }>()
-const emit = defineEmits<{ toast: [text: string] }>()
+const emit = defineEmits<{ toast: [text: string], close: [] }>()
 
 const PRESETS = POMODORO_MINUTES
 const MAX_SEC = 600 * 60
@@ -113,7 +113,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="glass flex w-[260px] flex-col items-center px-4 py-4" aria-label="番茄钟">
+  <!-- 外壳(glass 边框与宽度)由 ModalShell 提供,面板自身只出内容,不再自带 glass -->
+  <section class="flex flex-col items-center px-6 py-6" aria-label="番茄钟">
+    <h2 class="glow mb-3 text-[22px] text-cream">番茄钟</h2>
+
     <button
       class="group font-num glow relative text-[56px] leading-none text-accent"
       :aria-label="running ? '运行中,不能改时长' : '点击切换时长预设'"
@@ -122,8 +125,9 @@ onBeforeUnmount(() => {
     >
       {{ display }}
       <!-- 必须用自定义气泡:原生 title 在 disabled 的按钮上多数浏览器不显示,
-           而"运行中"这句提示恰恰只在禁用时才有意义 -->
-      <PixelTip :label="running ? '运行中' : '点击切换时长预设'" />
+           而"运行中"这句提示恰恰只在禁用时才有意义。
+           向下弹出:模态卡片是 overflow-y-auto,向上弹会被裁掉上缘 -->
+      <PixelTip :label="running ? '运行中' : '点击切换时长预设'" side="bottom" />
     </button>
 
     <div class="mt-3 flex items-center gap-4 text-[19px]">
@@ -139,5 +143,9 @@ onBeforeUnmount(() => {
     </div>
 
     <p class="mt-2 text-[15px] text-dim">{{ running ? '专注中,别分心太久哦' : '点数字换时长,开始就少看手机' }}</p>
+
+    <button class="glow mt-5 w-full py-2 text-[19px] text-accent hover:brightness-125" @click="emit('close')">
+      [ 关闭 ]
+    </button>
   </section>
 </template>

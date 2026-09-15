@@ -27,19 +27,31 @@ withDefaults(defineProps<{
   label: string
   /** center=居中对齐元素;start/end=贴左/贴右边,用于靠视口边缘的元素防溢出 */
   align?: 'center' | 'start' | 'end'
-}>(), { align: 'center' })
+  /**
+   * top=气泡在元素上方(默认);bottom=在元素下方。
+   * 需要 bottom 的场合很具体:元素处在 `overflow` 为 auto/hidden 的容器**顶部**时,
+   * 向上弹出的气泡会被容器裁掉上缘(模态卡片 `ModalShell` 就是 `overflow-y-auto`,
+   * 番茄钟面板放进去后数字上方那一截被切掉过一次)。
+   */
+  side?: 'top' | 'bottom'
+}>(), { align: 'center', side: 'top' })
 
 const ALIGN = {
   center: 'left-1/2 -translate-x-1/2',
   start: 'left-0',
   end: 'right-0',
 } as const
+
+const SIDE = {
+  top: 'bottom-full mb-2',
+  bottom: 'top-full mt-2',
+} as const
 </script>
 
 <template>
   <span
     aria-hidden="true"
-    class="tip pointer-events-none absolute bottom-full mb-2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
-    :class="ALIGN[align]"
+    class="tip pointer-events-none absolute opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+    :class="[ALIGN[align], SIDE[side]]"
   >{{ label }}</span>
 </template>

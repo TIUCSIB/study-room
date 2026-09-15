@@ -11,6 +11,8 @@ interface Todo {
   done: boolean
 }
 
+const emit = defineEmits<{ close: [] }>()
+
 const KEY = LS_KEYS.todos
 
 const todos = ref<Todo[]>([])
@@ -41,7 +43,8 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
 </script>
 
 <template>
-  <section class="glass flex w-[320px] flex-col px-3.5 py-3" aria-label="待办清单">
+  <!-- 外壳(glass 边框与宽度)由 ModalShell 提供,面板自身只出内容,不再自带 glass -->
+  <section class="flex flex-col px-5 py-5" aria-label="待办清单">
     <header class="mb-2 flex items-center justify-between">
       <span class="glow text-cream">今日待办</span>
       <span class="text-[15px] text-dim">{{ undoneCount ? `剩 ${undoneCount} 件` : '都清空啦' }}</span>
@@ -82,5 +85,9 @@ watch(todos, v => localStorage.setItem(KEY, JSON.stringify(v)), { deep: true })
         空空的,写一件小事<span class="animate-blink text-accent">▮</span>
       </li>
     </ul>
+
+    <button class="glow mt-5 w-full py-2 text-[19px] text-accent hover:brightness-125" @click="emit('close')">
+      [ 关闭 ]
+    </button>
   </section>
 </template>
